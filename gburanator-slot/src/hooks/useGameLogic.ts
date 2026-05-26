@@ -16,6 +16,8 @@ export const useGameLogic = (balance: number, setBalance: React.Dispatch<React.S
   const [isSpinning, setIsSpinning] = useState(false);
 
   const spin = useCallback(async () => {
+    if (isSpinning) return;
+
     if (balance < currentBet) {
       alert('Not enough truskawki!');
       return;
@@ -39,7 +41,7 @@ export const useGameLogic = (balance: number, setBalance: React.Dispatch<React.S
     }
 
     setIsSpinning(false);
-  }, [balance, currentBet, setBalance]);
+  }, [balance, currentBet, setBalance, isSpinning]);
 
   return { reels, isSpinning, spin };
 };
