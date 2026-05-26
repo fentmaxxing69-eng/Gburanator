@@ -1,51 +1,101 @@
 import { useState, useCallback } from 'react';
 import theme from '../theme.json';
+import { Theme } from '../types';
 
-export const useGameLogic = (
-  balance: number,
-  currentBet: number,
-  setBalance: (balance: number) => void
-) => {
-  const [reels, setReels] = useState<string[][]>([
-    ['cherry', 'cherry', 'cherry'],
-    ['cherry', 'cherry', 'cherry'],
-    ['cherry', 'cherry', 'cherry'],
-    ['cherry', 'cherry', 'cherry'],
-    ['cherry', 'cherry', 'cherry'],
-  ]);
+const typedTheme = theme as Theme;
+const symbolKeys = Object.keys(typedTheme.symbols);
+
+const getRandomSymbol = () => symbolKeys[Math.floor(Math.random() * symbolKeys.length)];
+
+const PAYLINES = [
+  [1, 1, 1, 1, 1], // Middle row
+  [0, 0, 0, 0, 0], // Top row
+  [2, 2, 2, 2, 2], // Bottom row
+  [0, 1, 2, 1, 0], // V-shape
+  [2, 1, 0, 1, 2], // Inverse V
+  [0, 0, 1, 2, 2], // Step down
+  [2, 2, 1, 0, 0], // Step up
+  [1, 0, 1, 0, 1], // Zigzag 1
+  [1, 2, 1, 2, 1], // Zigzag 2
+  [0, 1, 0, 1, 0], // Zigzag 3
+  [2, 1, 2, 1, 2], // Zigzag 4
+  [0, 0, 0, 1, 1], // 3 top, 2 mid
+  [2, 2, 2, 1, 1], // 3 bot, 2 mid
+  [1, 1, 0, 0, 0], // 2 mid, 3 top
+  [1, 1, 2, 2, 2], // 2 mid, 3 bot
+  [0, 2, 0, 2, 0], // Alternating top/bot
+  [2, 0, 2, 0, 2], // Alternating bot/top
+  [0, 1, 1, 1, 0], // Mid-concentrated 1
+  [2, 1, 1, 1, 2], // Mid-concentrated 2
+  [1, 0, 0, 0, 1], // Top-concentrated
+];
+
+export const useGameLogic = (balance: number, setBalance: React.Dispatch<React.SetStateAction<number>>, currentBet: number) => {
+  const [reels, setReels] = useState<string[][]>(() =>
+    Array.from({ length: 5 }, () =>
+      Array.from({ length: 3 }, () => getRandomSymbol())
+    )
+  );
   const [isSpinning, setIsSpinning] = useState(false);
-  const [stoppingReels, setStoppingReels] = useState<number[]>([]);
+  const [lastWin, setLastWin] = useState(0);
 
-  const symbolKeys = Object.keys(theme.symbols);
+  const calculateWin = (currentReels: string[][]) => {
+    let totalWin = 0;
 
-  const getRandomSymbol = () => {
-    return symbolKeys[Math.floor(Math.random() * symbolKeys.length)];
+    PAYLINES.forEach((payline) => {
+      const firstSymbol = currentReels[0][payline[0]];
+      let matchCount = 1;
+
+      for (let i = 1; i < 5; i++) {
+        if (currentReels[i][payline[i]] === firstSymbol) {
+          matchCount++;
+        } else {
+          break;
+        }
+      }
+
+      if (matchCount >= 3) {
+        const symbolValue = typedTheme.symbols[firstSymbol].value;
+        const multiplier = matchCount === 3 ? 1 : matchCount === 4 ? 2 : 5;
+        totalWin += symbolValue * currentBet * multiplier;
+      }
+    });
+
+    return totalWin;
   };
 
   const spin = useCallback(async () => {
+    if (isSpinning) return;
+
     if (balance < currentBet) {
+      alert('Not enough truskawki!');
       return;
     }
 
-    setBalance(balance - currentBet);
+    setBalance((prev) => prev - currentBet);
     setIsSpinning(true);
-    setStoppingReels([]);
+    setLastWin(0);
+
+    const finalResult: string[][] = [];
 
     for (let i = 0; i < 5; i++) {
-      // Wait 500ms before stopping each reel
       await new Promise((resolve) => setTimeout(resolve, 500));
-
+      const col = Array.from({ length: 3 }, () => getRandomSymbol());
+      finalResult[i] = col;
       setReels((prevReels) => {
-        const newReels = [...prevReels];
-        newReels[i] = [getRandomSymbol(), getRandomSymbol(), getRandomSymbol()];
-        return newReels;
+        const next = [...prevReels];
+        next[i] = col;
+        return next;
       });
-
-      setStoppingReels((prev) => [...prev, i]);
     }
 
+    const win = calculateWin(finalResult);
+    setLastWin(win);
+    if (win > 0) {
+      setBalance((prev) => prev + win);
+    }
     setIsSpinning(false);
-  }, [balance, currentBet, setBalance]);
+  }, [balance, currentBet, setBalance, isSpinning]);
 
-  return { reels, isSpinning, spin };
+  return { reels, isSpinning, spin, lastWin };
 };
