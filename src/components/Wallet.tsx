@@ -19,6 +19,7 @@ const Wallet: React.FC<WalletProps> = ({ balance, setBalance }) => {
 
     const duration = 500;
     const startTime = performance.now();
+    let requestId: number;
 
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
@@ -27,11 +28,12 @@ const Wallet: React.FC<WalletProps> = ({ balance, setBalance }) => {
       setDisplayBalance(currentValue);
 
       if (progress < 1) {
-        requestAnimationFrame(animate);
+        requestId = requestAnimationFrame(animate);
       }
     };
 
-    requestAnimationFrame(animate);
+    requestId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(requestId);
   }, [balance]);
 
   const handleAddFunds = () => {
