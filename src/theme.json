@@ -1,0 +1,32 @@
+{
+  "siteName": "Gburanator",
+  "currencyName": "truskawki",
+  "background": "https://placehold.co/1920x1080?text=Gburanator+Background",
+  "symbols": {
+    "cherry": {
+      "image": "https://placehold.co/100x100?text=Cherry",
+      "value": 10
+    },
+    "lemon": {
+      "image": "https://placehold.co/100x100?text=Lemon",
+      "value": 20
+    },
+    "seven": {
+      "image": "https://placehold.co/100x100?text=7",
+      "value": 100
+    },
+    "diamond": {
+      "image": "https://placehold.co/100x100?text=Diamond",
+      "value": 50
+    },
+    "star": {
+      "image": "https://placehold.co/100x100?text=Star",
+      "value": 200
+    }
+  },
+  "text": {
+    "spin": "SPIN!",
+    "win": "YOU WON {0} {1}!",
+    "addFunds": "ADD FUNDS"
+  }
+}
