@@ -38,11 +38,14 @@ export const useGameLogic = (balance: number, setBalance: React.Dispatch<React.S
   );
   const [isSpinning, setIsSpinning] = useState(false);
   const [lastWin, setLastWin] = useState(0);
+  const [winningLines, setWinningLines] = useState<number[][]>([]);
+  const [spinningReels, setSpinningReels] = useState<boolean[]>([false, false, false, false, false]);
 
   const calculateWin = (currentReels: string[][]) => {
     let totalWin = 0;
+    const winningLines: number[][] = [];
 
-    PAYLINES.forEach((payline) => {
+    PAYLINES.forEach((payline, index) => {
       const firstSymbol = currentReels[0][payline[0]];
       let matchCount = 1;
 
@@ -58,10 +61,11 @@ export const useGameLogic = (balance: number, setBalance: React.Dispatch<React.S
         const symbolValue = typedTheme.symbols[firstSymbol].value;
         const multiplier = matchCount === 3 ? 1 : matchCount === 4 ? 2 : 5;
         totalWin += symbolValue * currentBet * multiplier;
+        winningLines.push(payline);
       }
     });
 
-    return totalWin;
+    return { totalWin, winningLines };
   };
 
   const spin = useCallback(async () => {
@@ -74,7 +78,9 @@ export const useGameLogic = (balance: number, setBalance: React.Dispatch<React.S
 
     setBalance((prev) => prev - currentBet);
     setIsSpinning(true);
+    setSpinningReels([true, true, true, true, true]);
     setLastWin(0);
+    setWinningLines([]);
 
     const finalResult: string[][] = [];
 
@@ -87,15 +93,21 @@ export const useGameLogic = (balance: number, setBalance: React.Dispatch<React.S
         next[i] = col;
         return next;
       });
+      setSpinningReels((prev) => {
+        const next = [...prev];
+        next[i] = false;
+        return next;
+      });
     }
 
-    const win = calculateWin(finalResult);
-    setLastWin(win);
-    if (win > 0) {
-      setBalance((prev) => prev + win);
+    const { totalWin, winningLines } = calculateWin(finalResult);
+    setLastWin(totalWin);
+    setWinningLines(winningLines);
+    if (totalWin > 0) {
+      setBalance((prev) => prev + totalWin);
     }
     setIsSpinning(false);
   }, [balance, currentBet, setBalance, isSpinning]);
 
-  return { reels, isSpinning, spin, lastWin };
+  return { reels, isSpinning, spin, lastWin, winningLines, spinningReels };
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import theme from '../theme.json';
 
 interface WalletProps {
@@ -10,6 +10,29 @@ const Wallet: React.FC<WalletProps> = ({ balance, setBalance }) => {
   const [isAddingFunds, setIsAddingFunds] = useState(false);
   const [amount, setAmount] = useState('');
   const [error, setError] = useState('');
+  const [displayBalance, setDisplayBalance] = useState(balance);
+
+  useEffect(() => {
+    let startValue = displayBalance;
+    const endValue = balance;
+    if (startValue === endValue) return;
+
+    const duration = 500;
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const currentValue = Math.floor(startValue + (endValue - startValue) * progress);
+      setDisplayBalance(currentValue);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [balance]);
 
   const handleAddFunds = () => {
     const parsedAmount = parseInt(amount, 10);
@@ -28,7 +51,7 @@ const Wallet: React.FC<WalletProps> = ({ balance, setBalance }) => {
       <div className="flex flex-col">
         <span className="text-xs uppercase text-yellow-600 font-bold">Balance</span>
         <div className="flex items-center gap-2">
-          <span className="font-bold">{balance}</span>
+          <span className="font-bold">{displayBalance}</span>
           <span className="text-sm">{theme.currencyName}</span>
         </div>
       </div>
