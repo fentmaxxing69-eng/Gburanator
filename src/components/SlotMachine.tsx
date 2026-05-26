@@ -2,10 +2,10 @@ import React, { useMemo } from 'react';
 import theme from '../theme.json';
 import { Theme } from '../types';
 
-const SlotMachine: React.FC = () => {
-  const typedTheme = theme as Theme;
-  const symbolKeys = Object.keys(typedTheme.symbols);
+const typedTheme = theme as Theme;
+const symbolKeys = Object.keys(typedTheme.symbols);
 
+const SlotMachine: React.FC = () => {
   const reels = useMemo(() => {
     return Array.from({ length: 3 }, () =>
       Array.from({ length: 5 }, () =>
