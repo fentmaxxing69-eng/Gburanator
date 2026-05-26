@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Wallet from './components/Wallet';
 
 function App() {
+  const [balance, setBalance] = useState<number>(0);
+
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center gap-8">
       <h1 className="text-4xl font-bold text-blue-600">Hello Gburanator!</h1>
+      <Wallet balance={balance} setBalance={setBalance} />
     </div>
   );
 }
