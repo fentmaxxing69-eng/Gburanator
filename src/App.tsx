@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import Wallet from './components/Wallet';
 import SlotMachine from './components/SlotMachine';
+import Controls from './components/Controls';
 import { useGameLogic } from './hooks/useGameLogic';
+import theme from './theme.json';
+import { Theme } from './types';
+
+const typedTheme = theme as Theme;
 
 function App() {
-  const [balance, setBalance] = useState<number>(1000);
+  const [balance, setBalance] = useState<number>(0);
   const [currentBet, setCurrentBet] = useState<number>(10);
 
   const { reels, isSpinning, spin, lastWin, winningLines, spinningReels } = useGameLogic(
@@ -14,37 +19,40 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center gap-8">
-      <h1 className="text-4xl font-bold text-blue-600">Hello Gburanator!</h1>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center gap-8 p-4 overflow-hidden">
+      <h1 className="text-4xl font-black text-blue-600 italic uppercase tracking-tighter drop-shadow-sm">
+        {typedTheme.siteName}
+      </h1>
+
       <SlotMachine
         reels={reels}
         isSpinning={isSpinning}
         spinningReels={spinningReels}
-        spin={spin}
         winningLines={winningLines}
-        lastWin={lastWin}
       />
-      <div className="flex items-center gap-4">
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-sm font-bold text-gray-600 uppercase">Bet</span>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setCurrentBet(Math.max(1, currentBet - 1))}
-              className="px-2 py-1 bg-gray-300 rounded hover:bg-gray-400 font-bold"
-            >
-              -
-            </button>
-            <span className="text-xl font-mono font-bold w-12 text-center">{currentBet}</span>
-            <button
-              onClick={() => setCurrentBet(currentBet + 1)}
-              className="px-2 py-1 bg-gray-300 rounded hover:bg-gray-400 font-bold"
-            >
-              +
-            </button>
+
+      <div className="flex flex-col sm:flex-row items-center gap-6">
+        <Wallet balance={balance} setBalance={setBalance} />
+        <Controls
+          currentBet={currentBet}
+          setCurrentBet={setCurrentBet}
+          spin={spin}
+          isSpinning={isSpinning}
+        />
+      </div>
+
+      {lastWin > 0 && !isSpinning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+          <div className="bg-yellow-400 text-gray-900 px-12 py-8 rounded-3xl border-8 border-white shadow-[0_0_50px_rgba(250,204,21,0.8)] animate-bounce text-center">
+            <h2 className="text-6xl font-black italic uppercase leading-none mb-2">
+              BIG WIN!
+            </h2>
+            <p className="text-4xl font-bold font-mono">
+              {lastWin} {typedTheme.currencyName}
+            </p>
           </div>
         </div>
-        <Wallet balance={balance} setBalance={setBalance} />
-      </div>
+      )}
     </div>
   );
 }

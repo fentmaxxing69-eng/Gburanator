@@ -65,25 +65,6 @@ const SlotMachine: React.FC<SlotMachineProps> = ({
           </p>
         </div>
       </div>
-
-      <div className="flex flex-col items-center gap-4">
-        {lastWin > 0 && (
-          <div className="text-3xl font-bold text-yellow-400 animate-bounce">
-            WIN: {lastWin} {typedTheme.currencyName}!
-          </div>
-        )}
-        <button
-          onClick={spin}
-          disabled={isSpinning}
-          className={`px-8 py-4 text-2xl font-bold rounded-full transition-all transform active:scale-95 shadow-xl border-4 ${
-            isSpinning
-              ? 'bg-gray-600 text-gray-400 cursor-not-allowed border-gray-500'
-              : 'bg-yellow-500 text-gray-900 hover:bg-yellow-400 border-yellow-300 hover:scale-105'
-          }`}
-        >
-          {isSpinning ? 'SPINNING...' : 'SPIN!'}
-        </button>
-      </div>
     </div>
   );
 };
