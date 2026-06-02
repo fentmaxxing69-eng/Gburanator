@@ -81,5 +81,5 @@ export const useTheme = () => {
     fetchTheme();
   }, [fetchTheme]);
 
-  return { backgroundUrl, isLoading, error, updateTheme, fetchTheme };
+  return { theme: themeState, backgroundUrl, isLoading, error, updateTheme, fetchTheme };
 };
