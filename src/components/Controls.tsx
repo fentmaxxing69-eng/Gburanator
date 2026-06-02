@@ -40,7 +40,8 @@ const Controls: React.FC<ControlsProps> = ({ currentBet, setCurrentBet, spin, is
           </button>
           {isEditing ? (
             <input
-              type="text"
+              type="number"
+              aria-label="Edit bet amount"
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
               onBlur={handleSave}
@@ -49,15 +50,15 @@ const Controls: React.FC<ControlsProps> = ({ currentBet, setCurrentBet, spin, is
               className="bg-gray-800 text-yellow-400 border-2 border-yellow-400 rounded px-2 py-1 w-20 text-center text-3xl font-bold focus:outline-none"
             />
           ) : (
-            <span
+            <button
               onClick={() => {
                 setEditValue(currentBet.toString());
                 setIsEditing(true);
               }}
-              className="text-3xl font-bold text-yellow-400 min-w-[60px] text-center cursor-pointer hover:scale-110 transition-transform"
+              className="text-3xl font-bold text-yellow-400 min-w-[60px] text-center cursor-pointer hover:scale-110 transition-transform bg-transparent border-none p-0"
             >
               {currentBet}
-            </span>
+            </button>
           )}
           <button
             onClick={() => setCurrentBet(balance > 0 ? balance : typedTheme.minBet)}
