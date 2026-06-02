@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useTheme } from '../hooks/useTheme';
+import { SymbolConfig } from '../types';
 
 const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const { theme, backgroundUrl, updateTheme } = useTheme();
   const [inputUrl, setInputUrl] = useState(backgroundUrl);
-  const [symbolsEdit, setSymbolsEdit] = useState(theme.symbols);
-  const [isSaving, setIsSaving] = useState(false);
+  const [symbolsEdit, setSymbolsEdit] = useState<Record<string, { image: string; value: string | number }>>(theme.symbols);
+  const [isSavingBackground, setIsSavingBackground] = useState(false);
+  const [isSavingSymbols, setIsSavingSymbols] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   const handleSave = async () => {
-    setIsSaving(true);
+    setIsSavingBackground(true);
     setMessage(null);
     const result = await updateTheme({ background: inputUrl });
     if (result.success) {
@@ -17,7 +19,7 @@ const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     } else {
       setMessage({ text: `Error: ${result.error}`, type: 'error' });
     }
-    setIsSaving(false);
+    setIsSavingBackground(false);
   };
 
   const handleSymbolChange = (symbolKey: string, field: 'image' | 'value', value: string) => {
@@ -25,21 +27,30 @@ const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       ...prev,
       [symbolKey]: {
         ...prev[symbolKey],
-        [field]: field === 'value' ? parseInt(value, 10) || 0 : value
+        [field]: value
       }
     }));
   };
 
   const handleSaveSymbols = async () => {
-    setIsSaving(true);
+    setIsSavingSymbols(true);
     setMessage(null);
-    const result = await updateTheme({ symbols: symbolsEdit });
+
+    const updatedSymbols: Record<string, SymbolConfig> = {};
+    for (const [key, config] of Object.entries(symbolsEdit)) {
+      updatedSymbols[key] = {
+        image: config.image,
+        value: typeof config.value === 'string' ? parseInt(config.value, 10) || 0 : config.value
+      };
+    }
+
+    const result = await updateTheme({ symbols: updatedSymbols });
     if (result.success) {
       setMessage({ text: 'Symbols updated successfully!', type: 'success' });
     } else {
       setMessage({ text: `Error: ${result.error}`, type: 'error' });
     }
-    setIsSaving(false);
+    setIsSavingSymbols(false);
   };
 
   return (
@@ -71,10 +82,10 @@ const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               />
               <button
                 onClick={handleSave}
-                disabled={isSaving}
+                disabled={isSavingBackground}
                 className="bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-black px-6 rounded-xl transition-all active:scale-95 disabled:opacity-50 uppercase italic whitespace-nowrap"
               >
-                {isSaving ? 'Saving...' : 'Update'}
+                {isSavingBackground ? 'Saving...' : 'Update'}
               </button>
             </div>
           </div>
@@ -118,10 +129,10 @@ const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             </div>
             <button
               onClick={handleSaveSymbols}
-              disabled={isSaving}
+              disabled={isSavingSymbols}
               className="bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-black py-3 rounded-xl transition-all active:scale-95 disabled:opacity-50 uppercase italic"
             >
-              {isSaving ? 'Saving...' : 'Save All Symbols'}
+              {isSavingSymbols ? 'Saving...' : 'Save All Symbols'}
             </button>
           </div>
 
