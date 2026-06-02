@@ -6,6 +6,7 @@ export interface SymbolConfig {
 export interface Theme {
   siteName: string;
   currencyName: string;
+  minBet: number;
   background: string;
   symbols: Record<string, SymbolConfig>;
   text: Record<string, string>;

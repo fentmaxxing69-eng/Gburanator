@@ -19,7 +19,7 @@ const Controls: React.FC<ControlsProps> = ({ currentBet, setCurrentBet, spin, is
         <span className="text-xs uppercase text-yellow-600 font-bold">Current Bet</span>
         <div className="flex items-center gap-4">
           <button
-            onClick={() => setCurrentBet(10)}
+            onClick={() => setCurrentBet(typedTheme.minBet)}
             disabled={isSpinning}
             className="px-3 h-10 flex items-center justify-center bg-gray-800 text-yellow-400 border-2 border-yellow-600 rounded-md hover:bg-yellow-600 hover:text-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold uppercase text-xs"
           >
@@ -29,7 +29,7 @@ const Controls: React.FC<ControlsProps> = ({ currentBet, setCurrentBet, spin, is
             {currentBet}
           </span>
           <button
-            onClick={() => setCurrentBet(balance)}
+            onClick={() => setCurrentBet(balance > 0 ? balance : typedTheme.minBet)}
             disabled={isSpinning}
             className="px-3 h-10 flex items-center justify-center bg-gray-800 text-yellow-400 border-2 border-yellow-600 rounded-md hover:bg-yellow-600 hover:text-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold uppercase text-xs"
           >

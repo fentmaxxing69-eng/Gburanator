@@ -1,6 +1,7 @@
 {
   "siteName": "Gburanator",
   "currencyName": "truskawki",
+  "minBet": 10,
   "background": "https://placehold.co/1920x1080?text=Gburanator+Background",
   "symbols": {
     "cherry": {
