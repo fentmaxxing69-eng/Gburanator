@@ -9,9 +9,10 @@ interface ControlsProps {
   setCurrentBet: React.Dispatch<React.SetStateAction<number>>;
   spin: () => void;
   isSpinning: boolean;
+  balance: number;
 }
 
-const Controls: React.FC<ControlsProps> = ({ currentBet, setCurrentBet, spin, isSpinning }) => {
+const Controls: React.FC<ControlsProps> = ({ currentBet, setCurrentBet, spin, isSpinning, balance }) => {
   return (
     <div className="flex items-center gap-8 bg-gray-900 p-6 rounded-2xl border-4 border-yellow-600 shadow-2xl font-mono">
       <div className="flex flex-col items-center gap-2">
