@@ -4,12 +4,14 @@ import SlotMachine from './components/SlotMachine';
 import Controls from './components/Controls';
 import AdminPanel from './components/AdminPanel';
 import { useGameLogic } from './hooks/useGameLogic';
+import { useTheme } from './hooks/useTheme';
 import theme from './theme.json';
 import { Theme } from './types';
 
 const typedTheme = theme as Theme;
 
 function App() {
+  const { backgroundUrl } = useTheme();
   const [view, setView] = useState(window.location.pathname === '/cwel' ? 'admin' : 'game');
   const [balance, setBalance] = useState<number>(0);
   const [currentBet, setCurrentBet] = useState<number>(10);
@@ -25,7 +27,15 @@ function App() {
       {view === 'admin' ? (
         <AdminPanel onBack={() => setView('game')} />
       ) : (
-        <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center gap-8 p-4 overflow-hidden">
+        <div
+          className="min-h-screen flex flex-col items-center justify-center gap-8 p-4 overflow-hidden transition-all duration-500"
+          style={{
+            backgroundImage: `url(${backgroundUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundColor: '#f3f4f6'
+          }}
+        >
           <h1 className="text-4xl font-black text-blue-600 italic uppercase tracking-tighter drop-shadow-sm">
             {typedTheme.siteName}
           </h1>
