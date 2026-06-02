@@ -56,6 +56,7 @@ function App() {
               setCurrentBet={setCurrentBet}
               spin={spin}
               isSpinning={isSpinning}
+              balance={balance}
             />
           </div>
 
