@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTheme } from '../hooks/useTheme';
 
 const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
-  const { backgroundUrl, updateBackground } = useTheme();
+  const { backgroundUrl, updateTheme } = useTheme();
   const [inputUrl, setInputUrl] = useState(backgroundUrl);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
@@ -10,7 +10,7 @@ const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const handleSave = async () => {
     setIsSaving(true);
     setMessage(null);
-    const result = await updateBackground(inputUrl);
+    const result = await updateTheme({ background: inputUrl });
     if (result.success) {
       setMessage({ text: 'Background updated successfully!', type: 'success' });
     } else {
