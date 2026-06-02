@@ -17,8 +17,8 @@ const Controls: React.FC<ControlsProps> = ({ currentBet, setCurrentBet, spin, is
   const [editValue, setEditValue] = useState(currentBet.toString());
 
   const handleSave = () => {
-    const newValue = parseInt(editValue, 10);
-    if (!isNaN(newValue) && newValue >= typedTheme.minBet && newValue <= balance) {
+    const newValue = Number(editValue);
+    if (Number.isInteger(newValue) && newValue >= typedTheme.minBet && newValue <= balance) {
       setCurrentBet(newValue);
     }
     setIsEditing(false);
