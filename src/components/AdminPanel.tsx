@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTheme } from '../hooks/useTheme';
 
-const AdminPanel: React.FC = () => {
+const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const { backgroundUrl, updateBackground } = useTheme();
   const [inputUrl, setInputUrl] = useState(backgroundUrl);
   const [isSaving, setIsSaving] = useState(false);
@@ -34,8 +34,9 @@ const AdminPanel: React.FC = () => {
         </h1>
 
         <div className="flex flex-col gap-4">
-          <label className="text-xs uppercase font-bold text-yellow-600">Background Image URL</label>
+          <label htmlFor="bg-url" className="text-xs uppercase font-bold text-yellow-600">Background Image URL</label>
           <input
+            id="bg-url"
             type="text"
             value={inputUrl}
             onChange={(e) => setInputUrl(e.target.value)}
@@ -59,7 +60,7 @@ const AdminPanel: React.FC = () => {
         </div>
 
         <button
-          onClick={() => window.location.pathname = '/'}
+          onClick={onBack}
           className="mt-6 w-full text-yellow-600 hover:text-yellow-400 text-sm underline text-center"
         >
           Return to Game
