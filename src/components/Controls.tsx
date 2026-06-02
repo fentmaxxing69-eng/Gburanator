@@ -19,21 +19,21 @@ const Controls: React.FC<ControlsProps> = ({ currentBet, setCurrentBet, spin, is
         <span className="text-xs uppercase text-yellow-600 font-bold">Current Bet</span>
         <div className="flex items-center gap-4">
           <button
-            onClick={() => setCurrentBet(Math.max(1, currentBet - 1))}
+            onClick={() => setCurrentBet(10)}
             disabled={isSpinning}
-            className="w-10 h-10 flex items-center justify-center bg-gray-800 text-yellow-400 border-2 border-yellow-600 rounded-full hover:bg-yellow-600 hover:text-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold text-xl"
+            className="px-3 h-10 flex items-center justify-center bg-gray-800 text-yellow-400 border-2 border-yellow-600 rounded-md hover:bg-yellow-600 hover:text-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold uppercase text-xs"
           >
-            -
+            Min
           </button>
           <span className="text-3xl font-bold text-yellow-400 min-w-[60px] text-center">
             {currentBet}
           </span>
           <button
-            onClick={() => setCurrentBet(currentBet + 1)}
+            onClick={() => setCurrentBet(balance)}
             disabled={isSpinning}
-            className="w-10 h-10 flex items-center justify-center bg-gray-800 text-yellow-400 border-2 border-yellow-600 rounded-full hover:bg-yellow-600 hover:text-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold text-xl"
+            className="px-3 h-10 flex items-center justify-center bg-gray-800 text-yellow-400 border-2 border-yellow-600 rounded-md hover:bg-yellow-600 hover:text-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold uppercase text-xs"
           >
-            +
+            Max
           </button>
         </div>
       </div>
