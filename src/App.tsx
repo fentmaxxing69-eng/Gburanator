@@ -45,6 +45,8 @@ function App() {
             isSpinning={isSpinning}
             spinningReels={spinningReels}
             winningLines={winningLines}
+            spin={spin}
+            lastWin={lastWin}
           />
 
           <div className="flex flex-col sm:flex-row items-center gap-6">
