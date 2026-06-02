@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import theme from '../theme.json';
 import { Theme } from '../types';
 
@@ -13,6 +13,19 @@ interface ControlsProps {
 }
 
 const Controls: React.FC<ControlsProps> = ({ currentBet, setCurrentBet, spin, isSpinning, balance }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(currentBet.toString());
+
+  const handleSave = () => {
+    const newValue = parseInt(editValue);
+    if (!isNaN(newValue) && newValue > 0) {
+      setCurrentBet(newValue);
+    } else {
+      setCurrentBet(typedTheme.minBet);
+    }
+    setIsEditing(false);
+  };
+
   return (
     <div className="flex items-center gap-8 bg-gray-900 p-6 rounded-2xl border-4 border-yellow-600 shadow-2xl font-mono">
       <div className="flex flex-col items-center gap-2">
@@ -25,9 +38,27 @@ const Controls: React.FC<ControlsProps> = ({ currentBet, setCurrentBet, spin, is
           >
             Min
           </button>
-          <span className="text-3xl font-bold text-yellow-400 min-w-[60px] text-center">
-            {currentBet}
-          </span>
+          {isEditing ? (
+            <input
+              type="text"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onBlur={handleSave}
+              onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+              autoFocus
+              className="bg-gray-800 text-yellow-400 border-2 border-yellow-400 rounded px-2 py-1 w-20 text-center text-3xl font-bold focus:outline-none"
+            />
+          ) : (
+            <span
+              onClick={() => {
+                setEditValue(currentBet.toString());
+                setIsEditing(true);
+              }}
+              className="text-3xl font-bold text-yellow-400 min-w-[60px] text-center cursor-pointer hover:scale-110 transition-transform"
+            >
+              {currentBet}
+            </span>
+          )}
           <button
             onClick={() => setCurrentBet(balance > 0 ? balance : typedTheme.minBet)}
             disabled={isSpinning}
