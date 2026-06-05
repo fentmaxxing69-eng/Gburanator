@@ -4,11 +4,26 @@ import { SymbolConfig } from '../types';
 
 const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const { theme, backgroundUrl, updateTheme } = useTheme();
+  const [passwordVerified, setPasswordVerified] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [passwordError, setPasswordError] = useState(false);
+
   const [inputUrl, setInputUrl] = useState(backgroundUrl);
   const [symbolsEdit, setSymbolsEdit] = useState<Record<string, { image: string; value: string | number }>>(theme.symbols);
   const [isSavingBackground, setIsSavingBackground] = useState(false);
   const [isSavingSymbols, setIsSavingSymbols] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordInput === 'LipkaCipka') {
+      setPasswordVerified(true);
+      setPasswordError(false);
+    } else {
+      setPasswordError(true);
+    }
+  };
+
 
   const handleSave = async () => {
     setIsSavingBackground(true);
@@ -62,10 +77,43 @@ const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         backgroundPosition: 'center'
       }}
     >
-      <div className="bg-gray-900/90 p-8 rounded-3xl border-4 border-yellow-500 shadow-2xl max-w-3xl w-full backdrop-blur-md">
-        <h1 className="text-3xl font-black text-yellow-500 italic uppercase text-center mb-6 tracking-tighter">
-          Admin Panel
-        </h1>
+      {!passwordVerified ? (
+        <div className="bg-gray-900/90 p-8 rounded-3xl border-4 border-yellow-500 shadow-2xl max-w-md w-full backdrop-blur-md text-center">
+          <h1 className="text-3xl font-black text-yellow-500 italic uppercase mb-6 tracking-tighter">
+            Admin Access
+          </h1>
+          <form onSubmit={handlePasswordSubmit} className="flex flex-col gap-4">
+            <input
+              type="password"
+              value={passwordInput}
+              onChange={(e) => setPasswordInput(e.target.value)}
+              className={`w-full bg-gray-800 border-2 ${passwordError ? 'border-red-500' : 'border-yellow-600'} rounded-xl p-3 text-white focus:outline-none focus:border-yellow-400 transition-colors font-mono`}
+              placeholder="Enter Password"
+              required
+            />
+            {passwordError && (
+              <p className="text-red-500 text-xs font-bold uppercase">Invalid Password</p>
+            )}
+            <button
+              type="submit"
+              className="bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-black py-3 rounded-xl transition-all active:scale-95 uppercase italic"
+            >
+              Unlock Panel
+            </button>
+          </form>
+          <button
+            onClick={onBack}
+            className="mt-6 text-yellow-600 hover:text-yellow-400 text-sm underline"
+          >
+            Return to Game
+          </button>
+        </div>
+      ) : (
+        <div className="bg-gray-900/90 p-8 rounded-3xl border-4 border-yellow-500 shadow-2xl max-w-3xl w-full backdrop-blur-md">
+          <h1 className="text-3xl font-black text-yellow-500 italic uppercase text-center mb-6 tracking-tighter">
+            Admin Panel
+          </h1>
+
 
         <div className="flex flex-col gap-6">
           {/* Background Editor */}
