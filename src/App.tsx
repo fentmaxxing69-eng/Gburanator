@@ -11,7 +11,7 @@ import { Theme } from './types';
 const typedTheme = theme as Theme;
 
 function App() {
-  const { backgroundUrl } = useTheme();
+  const { theme, backgroundUrl } = useTheme();
   const [view, setView] = useState(window.location.pathname === '/cwel' ? 'admin' : 'game');
   const [balance, setBalance] = useState<number>(0);
   const [currentBet, setCurrentBet] = useState<number>(10);
@@ -41,6 +41,8 @@ function App() {
           </h1>
 
           <SlotMachine
+            siteName={theme.siteName}
+            symbols={theme.symbols}
             reels={reels}
             isSpinning={isSpinning}
             spinningReels={spinningReels}

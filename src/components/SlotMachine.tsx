@@ -1,11 +1,9 @@
 import React from 'react';
-import theme from '../theme.json';
 import { Theme } from '../types';
 
-const typedTheme = theme as Theme;
-const symbolKeys = Object.keys(typedTheme.symbols);
-
 interface SlotMachineProps {
+  siteName: string;
+  symbols: Theme['symbols'];
   reels: string[][];
   isSpinning: boolean;
   spin: () => void;
@@ -15,6 +13,8 @@ interface SlotMachineProps {
 }
 
 const SlotMachine: React.FC<SlotMachineProps> = ({
+  siteName,
+  symbols,
   reels,
   isSpinning,
   spin,
@@ -34,7 +34,7 @@ const SlotMachine: React.FC<SlotMachineProps> = ({
               }`}
             >
               {col.map((symbolKey, rowIndex) => {
-                const symbol = typedTheme.symbols[symbolKey];
+                const symbol = symbols[symbolKey];
                 const isWinning = winningLines.some((line) => line[colIndex] === rowIndex);
 
                 return (
@@ -61,7 +61,7 @@ const SlotMachine: React.FC<SlotMachineProps> = ({
         </div>
         <div className="mt-4 text-center">
           <p className="text-yellow-500 font-bold text-xl uppercase tracking-widest">
-            {typedTheme.siteName}
+            {siteName}
           </p>
         </div>
       </div>
