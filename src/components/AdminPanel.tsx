@@ -198,6 +198,7 @@ const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           Return to Game
         </button>
       </div>
+      )}
     </div>
   );
 };
