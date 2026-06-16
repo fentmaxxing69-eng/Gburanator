@@ -19,7 +19,8 @@ function App() {
   const { reels, isSpinning, spin, lastWin, winningLines, spinningReels } = useGameLogic(
     balance,
     setBalance,
-    currentBet
+    currentBet,
+    theme
   );
 
   return (
@@ -30,14 +31,14 @@ function App() {
         <div
           className="min-h-screen flex flex-col items-center justify-center gap-8 p-4 overflow-hidden transition-all duration-500"
           style={{
-            backgroundImage: `url(${backgroundUrl})`,
+            backgroundImage: (theme && backgroundUrl) ? `url(${backgroundUrl})` : 'none',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundColor: '#f3f4f6'
           }}
         >
           <h1 className="text-4xl font-black text-blue-600 italic uppercase tracking-tighter drop-shadow-sm">
-            {typedTheme.siteName}
+            {theme?.siteName || 'Gburanator'}
           </h1>
 
           <SlotMachine
@@ -69,7 +70,7 @@ function App() {
                   BIG WIN!
                 </h2>
                 <p className="text-4xl font-bold font-mono">
-                  {lastWin} {typedTheme.currencyName}
+                  {lastWin} {theme?.currencyName || 'Credits'}
                 </p>
               </div>
             </div>

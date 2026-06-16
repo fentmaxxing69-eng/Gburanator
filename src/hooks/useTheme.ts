@@ -31,10 +31,15 @@ export const useTheme = () => {
       });
       if (!response.ok) throw new Error('Failed to fetch theme');
       const data = (await response.json()) as JsonBinResponse;
-      const cloudTheme = data.record;
-      if (cloudTheme) {
-        setThemeState(cloudTheme);
-        setBackgroundUrl(cloudTheme.background);
+
+      // DEFENSIVE CHECK: Ensure data.record exists and is an object
+      if (data && data.record && typeof data.record === 'object') {
+        setThemeState(data.record);
+        setBackgroundUrl(data.record.background || theme.background);
+      } else {
+        console.warn('Cloud theme record is missing or malformed. Using fallback.');
+        setThemeState(theme as Theme);
+        setBackgroundUrl(theme.background);
       }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
@@ -61,7 +66,7 @@ export const useTheme = () => {
           'Content-Type': 'application/json',
           'X-Master-Key': API_KEY
         },
-        body: JSON.stringify(updatedTheme)
+        body: JSON.stringify({ record: updatedTheme })
       });
       if (!response.ok) throw new Error('Failed to update theme');
 
